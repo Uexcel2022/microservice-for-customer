@@ -13,9 +13,9 @@ public class WalletTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String walletId;
+    private long walletId;
     private String accountNumber;
     private String accountDescription;
     private String transactionType;
-    private String amount;
+    private double amount;
 }

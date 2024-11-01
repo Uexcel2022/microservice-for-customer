@@ -18,7 +18,7 @@ public class CustomerController {
     public ResponseEntity<ResponseDto> getAllCustomers(@RequestBody CustomerDto customerDto) {
         iCustomerService.createCustomer(customerDto);
         return ResponseEntity.ok().body(
-                new ResponseDto(ICustomerConstants.statuscode_201,ICustomerConstants.msg_201)
+                new ResponseDto(ICustomerConstants.STATUSCODE_201,ICustomerConstants.MSG_201)
         );
     }
     @GetMapping("/fetch")
@@ -31,11 +31,11 @@ public class CustomerController {
         boolean status = iCustomerService.updateCustomer(customerDto);
         if (status) {
             return ResponseEntity.ok().body(
-                    new ResponseDto(ICustomerConstants.statuscode_200,ICustomerConstants.msg_200_update));
+                    new ResponseDto(ICustomerConstants.STATUSCODE_200,ICustomerConstants.MSG_200_UPDATE));
         }
         return ResponseEntity.ok().body(
-                new ResponseDto(ICustomerConstants.statuscode_417,
-                        ICustomerConstants.msg_417));
+                new ResponseDto(ICustomerConstants.STATUSCODE_417,
+                        ICustomerConstants.MSG_417));
     }
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDto> deleteCustomer(
@@ -43,10 +43,10 @@ public class CustomerController {
         boolean status = iCustomerService.deleteCustomer(emailOrPhone);
         if (status) {
             return ResponseEntity.ok().body(
-                    new ResponseDto(ICustomerConstants.statuscode_200,ICustomerConstants.msg_200_delete));
+                    new ResponseDto(ICustomerConstants.STATUSCODE_200,ICustomerConstants.MSG_200_DELETE));
         }
         return ResponseEntity.ok().body(
-                new ResponseDto(ICustomerConstants.statuscode_417,
-                        ICustomerConstants.msg_417));
+                new ResponseDto(ICustomerConstants.STATUSCODE_417,
+                        ICustomerConstants.MSG_417));
     }
 }

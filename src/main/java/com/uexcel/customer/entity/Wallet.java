@@ -16,4 +16,6 @@ public class Wallet extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String customerId;
     private double balance;
+    @JsonIgnore
+    private String status;
 }

@@ -1,5 +1,6 @@
 package com.uexcel.customer.service.impl;
 
+import com.uexcel.customer.constants.ICustomerConstants;
 import com.uexcel.customer.dto.CustomerDto;
 
 import com.uexcel.customer.entity.Customer;
@@ -64,16 +65,18 @@ public class CustomerServiceImpl implements ICustomerService {
      */
     public boolean deleteCustomer(String emailOrPhone) {
         Customer customer = customerExists(emailOrPhone);
+        customer.setStatus(ICustomerConstants.CUSTOMER_DEACTIVATED);
         Wallet wallet = walletExists(customer.getId());
-        customerRepository.delete(customer);
-        welledRepository.delete(wallet);
+        wallet.setStatus(ICustomerConstants.CUSTOMER_DEACTIVATED);
+        customerRepository.save(customer);
+        welledRepository.save(wallet);
         return true;
     }
 
 
 
     private Customer customerExists(String emailOrPhone) {
-        return customerRepository
+        Customer customer = customerRepository
                 .findByEmailAddressOrPhoneNumber(emailOrPhone,emailOrPhone)
                 .orElseThrow(()->{
                     if(emailOrPhone!= null && !emailOrPhone.isEmpty()) {
@@ -86,6 +89,10 @@ public class CustomerServiceImpl implements ICustomerService {
                         return new BadRequestException("The inputted value is Null or Empty");
                     }
                 });
+        if(customer.getStatus().equals(ICustomerConstants.CUSTOMER_DEACTIVATED)) {
+            throw new BadRequestException("Customer is deactivated.");
+        }
+        return customer;
     }
 
 
