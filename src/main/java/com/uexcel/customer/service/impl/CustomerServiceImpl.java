@@ -2,9 +2,10 @@ package com.uexcel.customer.service.impl;
 
 import com.uexcel.customer.dto.CustomerDto;
 
-import com.uexcel.customer.entity.BaseEntity;
 import com.uexcel.customer.entity.Customer;
 import com.uexcel.customer.entity.Wallet;
+import com.uexcel.customer.exception.BadRequestException;
+import com.uexcel.customer.exception.ResourceNotFoundException;
 import com.uexcel.customer.mapper.ICustomerMapper;
 import com.uexcel.customer.repository.CustomerRepository;
 import com.uexcel.customer.repository.WalletRepository;
@@ -13,15 +14,13 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
 public class CustomerServiceImpl implements ICustomerService {
-    private final ICustomerMapper iCustormerMapper;
+    private final ICustomerMapper iCustomerMapper;
     private  final CustomerRepository customerRepository;
-    private  final WalletRepository welletRepository;
+    private  final WalletRepository welledRepository;
 
     /**
      * @param customerDto - holds customer details for registration
@@ -30,10 +29,10 @@ public class CustomerServiceImpl implements ICustomerService {
     @Transactional
     public void createCustomer(CustomerDto customerDto) {
         Customer customer =
-                customerRepository.save(iCustormerMapper
+                customerRepository.save(iCustomerMapper
                         .mapToNewCustomer(customerDto));
-        Wallet  wallet = iCustormerMapper.createWallet(customer.getId());
-        welletRepository.save(wallet);
+        Wallet  wallet = iCustomerMapper.createWallet(customer.getId());
+        welledRepository.save(wallet);
     }
 
     /**
@@ -42,10 +41,9 @@ public class CustomerServiceImpl implements ICustomerService {
      */
     @Override
     public CustomerDto getCustomer(String emailOrPhone) {
-        List<BaseEntity> baseEntity = getCustomerAndWallet(emailOrPhone);
-        Customer customer = (Customer) baseEntity.get(0);
-        Wallet wallet = (Wallet) baseEntity.get(1);
-      return   iCustormerMapper.mapToCustomerDto(customer,wallet);
+        Customer customer = customerExists(emailOrPhone);
+        Wallet wallet = walletExists(customer.getId());
+      return   iCustomerMapper.mapToCustomerDto(customer,wallet);
     }
 
     /**
@@ -54,11 +52,9 @@ public class CustomerServiceImpl implements ICustomerService {
      */
     @Override
     public boolean updateCustomer(CustomerDto customerDto) {
-        Customer customer = customerRepository
-                .findByEmailOrPhone(customerDto.getEmail(),customerDto.getEmail())
-                .orElseThrow(()->new RuntimeException("Not found"));
+        Customer customer = customerExists(customerDto.getEmailAddress());
        customerRepository.save(
-               iCustormerMapper.mapToUpdateCustomer(customerDto,customer));
+               iCustomerMapper.mapToUpdateCustomer(customerDto,customer));
         return true;
     }
 
@@ -67,25 +63,37 @@ public class CustomerServiceImpl implements ICustomerService {
      * @return - return boolean value indicating delete is successful or not
      */
     public boolean deleteCustomer(String emailOrPhone) {
-        List<BaseEntity> baseEntity = getCustomerAndWallet(emailOrPhone);
-        Customer customer = (Customer) baseEntity.get(0);
-        Wallet wallet = (Wallet) baseEntity.get(1);
+        Customer customer = customerExists(emailOrPhone);
+        Wallet wallet = walletExists(customer.getId());
         customerRepository.delete(customer);
-        welletRepository.delete(wallet);
+        welledRepository.delete(wallet);
         return true;
     }
 
 
 
-
-    private List<BaseEntity> getCustomerAndWallet(String emailOrPhone) {
-        Customer customer = customerRepository
-                .findByEmailOrPhone(emailOrPhone,emailOrPhone)
-                .orElseThrow(()->new RuntimeException("Not found"));
-        Wallet wallet =  welletRepository.findByCustomerId(customer.getId())
-                .orElseThrow(()->new RuntimeException("Not found"));
-        return List.of(customer,wallet);
-
+    private Customer customerExists(String emailOrPhone) {
+        return customerRepository
+                .findByEmailAddressOrPhoneNumber(emailOrPhone,emailOrPhone)
+                .orElseThrow(()->{
+                    if(emailOrPhone!= null && !emailOrPhone.isEmpty()) {
+                        if (emailOrPhone.contains("@")) {
+                            return new ResourceNotFoundException("Customer", "emailAddress", emailOrPhone);
+                        } else {
+                            return new ResourceNotFoundException("Customer", "PhoneNumber", emailOrPhone);
+                        }
+                    } else {
+                        return new BadRequestException("The inputted value is Null or Empty");
+                    }
+                });
     }
+
+
+    private Wallet walletExists(String customerId) {
+       return welledRepository.findByCustomerId(customerId)
+                .orElseThrow(()->new ResourceNotFoundException("Wallet","CustomerId",customerId));
+    }
+
+
 
 }

@@ -10,20 +10,20 @@ public interface ICustomerMapper {
 
     default Customer mapToNewCustomer(CustomerDto customerDto ) {
         Customer customer = new Customer();
-        customer.setEmail(customerDto.getEmail());
+        customer.setEmailAddress(customerDto.getEmailAddress());
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setPassword(customerDto.getPassword());
-        customer.setPhone(customerDto.getPhone());
+        customer.setPhoneNumber(customerDto.getPhoneNumber());
         return customer;
     }
 
     default CustomerDto mapToCustomerDto(Customer customer, Wallet wallet) {
         CustomerDto customerDto = new CustomerDto();
-        customerDto.setEmail(customer.getEmail());
+        customerDto.setEmailAddress(customer.getEmailAddress());
         customerDto.setFirstName(customer.getFirstName());
         customerDto.setLastName(customer.getLastName());
-        customerDto.setPhone(customer.getPhone());
+        customerDto.setPhoneNumber(customer.getPhoneNumber());
         customerDto.setWallet(wallet);
         return customerDto;
 
@@ -31,10 +31,10 @@ public interface ICustomerMapper {
     }
 
     default Customer mapToUpdateCustomer(CustomerDto customerDto, Customer customer ) {
-        customer.setEmail(customerDto.getEmail());
+        customer.setEmailAddress(customerDto.getEmailAddress());
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
-        customer.setPhone(customerDto.getPhone());
+        customer.setPhoneNumber(customerDto.getPhoneNumber());
         return customer;
     }
 
