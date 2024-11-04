@@ -1,15 +1,15 @@
-package com.uexcel.customer.service.impl;
+package com.uexcel.customer.service;
 
-import com.uexcel.customer.entity.Wallet;
+import com.uexcel.customer.dto.WalletDto;
 import com.uexcel.customer.entity.WalletTransaction;
 
 public interface IwalletService {
-
+    String ACCT_DS = "wallet", T_TYPE ="ticket";
     /**
      * @param walletId - the customer wallet id
-     * @return Wallet details
+     * @return WalletDto info
      */
-    Wallet fetchWallet(long walletId);
+    WalletDto fetchWallet(long walletId);
 
     /**
      * @param wt  - request body - wallet transaction

@@ -18,4 +18,5 @@ public class WalletTransaction {
     private String accountDescription;
     private String transactionType;
     private double amount;
+    private String Date;
 }

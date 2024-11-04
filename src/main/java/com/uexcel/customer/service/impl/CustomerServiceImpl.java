@@ -6,6 +6,7 @@ import com.uexcel.customer.dto.CustomerDto;
 import com.uexcel.customer.entity.Customer;
 import com.uexcel.customer.entity.Wallet;
 import com.uexcel.customer.exception.BadRequestException;
+import com.uexcel.customer.exception.InvalidInputException;
 import com.uexcel.customer.exception.ResourceNotFoundException;
 import com.uexcel.customer.mapper.ICustomerMapper;
 import com.uexcel.customer.repository.CustomerRepository;
@@ -14,6 +15,8 @@ import com.uexcel.customer.service.ICustomerService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 
 @Service
@@ -29,6 +32,30 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     @Transactional
     public void createCustomer(CustomerDto customerDto) {
+
+        List<Map<String,String>> used = new ArrayList<>();
+        Map<String,String> map1 = new HashMap<>();
+        Map<String,String> map2 = new HashMap<>();
+        boolean existsEmail = customerRepository
+                .existsByEmailAddress(customerDto.getEmailAddress());
+        boolean existsPhoneNumber = customerRepository
+                .existsByPhoneNumber(customerDto.getPhoneNumber());
+
+        if (existsEmail) {
+           map1.put("emailAddress",
+                   customerDto.getEmailAddress());
+           used.add(map1);
+        }
+
+        if (existsPhoneNumber) {
+            map2.put("phoneNumber",customerDto.getPhoneNumber());
+            used.add(map2);
+        }
+
+        if(used.size()>0){
+            throw new  InvalidInputException(used);
+        }
+
         Customer customer =
                 customerRepository.save(iCustomerMapper
                         .mapToNewCustomer(customerDto));

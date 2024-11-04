@@ -1,5 +1,6 @@
 package com.uexcel.customer.exception;
 
+import com.uexcel.customer.dto.CustomerErrorResponseDto;
 import com.uexcel.customer.dto.ErrorResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,30 @@ public class GlobalExceptionHandler {
                 400,e.getMessage(),
                 webRequest.getDescription(false), getTimeStamp());
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<CustomerErrorResponseDto> handleInvalidInputException(
+            final InvalidInputException e, final WebRequest webRequest){
+        String msg = e.getUsed().size()>1? "Fields value has been used by customer.":
+                "Field value has been been use by a customer";
+        CustomerErrorResponseDto err =
+                new CustomerErrorResponseDto(
+                        getTimeStamp(), 226,
+                        HttpStatus.IM_USED,msg,
+                        e.getUsed() , webRequest.getDescription(false)
+                );
+
+        return new ResponseEntity<>(err, HttpStatus.IM_USED);
+    }
+
+    @ExceptionHandler(ExceptionFail.class)
+    public ResponseEntity<ErrorResponseDto> handleExceptionFail(
+            final ExceptionFail e, final WebRequest webRequest){
+        ErrorResponseDto err =  new ErrorResponseDto(
+                417,e.getMessage(),
+                webRequest.getDescription(false), getTimeStamp());
+        return new ResponseEntity<>(err, HttpStatus.EXPECTATION_FAILED);
     }
 
     @ExceptionHandler(Exception.class)

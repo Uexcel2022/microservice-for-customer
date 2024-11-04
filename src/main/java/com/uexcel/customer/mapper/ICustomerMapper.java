@@ -2,6 +2,7 @@ package com.uexcel.customer.mapper;
 
 import com.uexcel.customer.constants.ICustomerConstants;
 import com.uexcel.customer.dto.CustomerDto;
+import com.uexcel.customer.dto.WalletDto;
 import com.uexcel.customer.entity.Customer;
 import com.uexcel.customer.entity.Wallet;
 
@@ -26,7 +27,7 @@ public interface ICustomerMapper {
         customerDto.setFirstName(customer.getFirstName());
         customerDto.setLastName(customer.getLastName());
         customerDto.setPhoneNumber(customer.getPhoneNumber());
-        customerDto.setWallet(wallet);
+        customerDto.setWalletDto(mapToWalletDto(wallet));
         return customerDto;
 
 
@@ -43,11 +44,18 @@ public interface ICustomerMapper {
     default Wallet createWallet(String customerId) {
         Long walletId = 1000000000000L + new  Random().nextInt(900000000);
         Wallet wallet = new Wallet();
-        wallet.setWallId(walletId);
+        wallet.setWalletId(walletId);
         wallet.setCustomerId(customerId);
         wallet.setStatus(ICustomerConstants.CUSTOMER_ACTIVE);
         wallet.setBalance(1500.00);
         return wallet;
+    }
+
+    default WalletDto mapToWalletDto(Wallet wallet) {
+        WalletDto walletDto = new WalletDto();
+        walletDto.setWalletId(wallet.getWalletId());
+        walletDto.setBalance(wallet.getBalance());
+        return walletDto;
     }
 
 }

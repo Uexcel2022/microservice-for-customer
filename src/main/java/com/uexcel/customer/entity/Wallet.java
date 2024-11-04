@@ -11,8 +11,7 @@ import lombok.Setter;
 @Setter @Getter
 public class Wallet extends BaseEntity {
     @Id
-    private Long wallId;
-    @JsonIgnore
+    private Long walletId;
     @Column(nullable = false, unique = true)
     private String customerId;
     private double balance;

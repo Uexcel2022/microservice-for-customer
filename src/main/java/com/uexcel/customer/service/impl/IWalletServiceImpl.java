@@ -1,27 +1,34 @@
 package com.uexcel.customer.service.impl;
 
 import com.uexcel.customer.constants.ICustomerConstants;
+import com.uexcel.customer.dto.WalletDto;
 import com.uexcel.customer.entity.Wallet;
 import com.uexcel.customer.entity.WalletTransaction;
 import com.uexcel.customer.exception.BadRequestException;
 import com.uexcel.customer.exception.ResourceNotFoundException;
+import com.uexcel.customer.mapper.ICustomerMapper;
 import com.uexcel.customer.repository.WalletRepository;
 import com.uexcel.customer.repository.WalletTransactionRepsitory;
+import com.uexcel.customer.service.IwalletService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 @AllArgsConstructor
-public class IWalletServiceImpl implements IwalletService{
+public class IWalletServiceImpl implements IwalletService {
     private final WalletRepository walletRepository;
     private final WalletTransactionRepsitory wTransactionRepository;
+    private final ICustomerMapper iCustomerMapper;
     /**
      * @param walletId - the customer wallet id
-     * @return Wallet details
+     * @return Wallet info
      */
     @Override
-    public Wallet fetchWallet(long walletId) {
-        return getWallet(walletId);
+    public WalletDto fetchWallet(long walletId) {
+        return iCustomerMapper.mapToWalletDto(getWallet(walletId));
     }
 
     /**
@@ -29,12 +36,20 @@ public class IWalletServiceImpl implements IwalletService{
      * @return boolean value indicating update is successful or not
      */
     @Override
+    @Transactional
     public boolean updateWallet(WalletTransaction wt) {
         Wallet wallet = getWallet(wt.getWalletId());
-        double newBal = wt.getAmount()+wallet.getBalance();
+        double newBal = wt.getAmount() + wallet.getBalance();
           wallet.setBalance(newBal);
+          WalletTransaction walletTransaction = new WalletTransaction();
+          walletTransaction.setAmount(wt.getAmount());
+          walletTransaction.setWalletId(wt.getWalletId());
+          walletTransaction.setAccountNumber(Long.toString(wt.getWalletId()));
+          walletTransaction.setTransactionType(T_TYPE);
+          walletTransaction.setAccountDescription(ACCT_DS);
+          walletTransaction.setDate(new Date().toString());
           walletRepository.save(wallet);
-          wTransactionRepository.save(wt);
+          wTransactionRepository.save(walletTransaction);
         return true;
     }
 

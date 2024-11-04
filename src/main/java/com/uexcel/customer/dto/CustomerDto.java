@@ -1,7 +1,6 @@
 package com.uexcel.customer.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.uexcel.customer.entity.Wallet;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +13,5 @@ public class CustomerDto {
     @JsonIgnore
     private String password;
 
-    private Wallet wallet;
+    private WalletDto walletDto;
 }
