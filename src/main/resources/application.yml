@@ -33,7 +33,7 @@ management:
       enabled: true
 endpoints:
   shutdown:
-    enabled: true;
+    enabled: true
 
 eureka:
   instance:
