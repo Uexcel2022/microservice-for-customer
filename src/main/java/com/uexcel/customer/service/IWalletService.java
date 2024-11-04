@@ -3,7 +3,7 @@ package com.uexcel.customer.service;
 import com.uexcel.customer.dto.WalletDto;
 import com.uexcel.customer.entity.WalletTransaction;
 
-public interface IwalletService {
+public interface IWalletService {
     String ACCT_DS = "wallet", T_TYPE ="ticket";
     /**
      * @param walletId - the customer wallet id

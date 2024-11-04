@@ -52,7 +52,7 @@ public class CustomerServiceImpl implements ICustomerService {
             used.add(map2);
         }
 
-        if(used.isEmpty()){
+        if(!used.isEmpty()){
             throw new  InvalidInputException(used);
         }
 

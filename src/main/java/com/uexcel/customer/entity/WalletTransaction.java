@@ -1,9 +1,6 @@
 package com.uexcel.customer.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +10,13 @@ public class WalletTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Column(nullable = false)
     private long walletId;
+    @Column(nullable = false)
     private String accountNumber;
+    @Column(nullable = false)
     private String accountDescription;
+    @Column(nullable = false)
     private String transactionType;
     private double amount;
     private String Date;

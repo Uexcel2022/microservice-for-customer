@@ -9,16 +9,17 @@ import com.uexcel.customer.exception.ResourceNotFoundException;
 import com.uexcel.customer.mapper.ICustomerMapper;
 import com.uexcel.customer.repository.WalletRepository;
 import com.uexcel.customer.repository.WalletTransactionRepsitory;
-import com.uexcel.customer.service.IwalletService;
+import com.uexcel.customer.service.IWalletService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Service
 @AllArgsConstructor
-public class IWalletServiceImpl implements IwalletService {
+public class IIWalletServiceImpl implements IWalletService {
     private final WalletRepository walletRepository;
     private final WalletTransactionRepsitory wTransactionRepository;
     private final ICustomerMapper iCustomerMapper;
@@ -58,9 +59,16 @@ public class IWalletServiceImpl implements IwalletService {
      * @return boolean value indicating wallet funding is successful or not
      */
     @Override
+    @Transactional
     public boolean fundWallet(WalletTransaction wt) {
-        getWallet(wt.getWalletId());
-        wTransactionRepository.save(wt);
+        if(wt.getAmount() <= 0){
+            throw new BadRequestException("Amount must be greater than 0: "+wt.getAmount());
+        }
+       Wallet wallet = getWallet(wt.getWalletId());
+       wallet.setBalance(wallet.getBalance() + wt.getAmount());
+       wt.setDate(LocalDate.now().toString());
+       wTransactionRepository.save(wt);
+       walletRepository.save(wallet);
         return true;
     }
 
