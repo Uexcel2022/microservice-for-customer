@@ -27,10 +27,10 @@ public interface ICustomerMapper {
         customerDto.setFirstName(customer.getFirstName());
         customerDto.setLastName(customer.getLastName());
         customerDto.setPhoneNumber(customer.getPhoneNumber());
+        wallet.setCustomerId(customer.getCustomerId());
         customerDto.setWalletDto(mapToWalletDto(wallet));
+        customerDto.setCustomerId(customer.getCustomerId());
         return customerDto;
-
-
     }
 
     default Customer mapToUpdateCustomer(CustomerDto customerDto, Customer customer ) {
@@ -55,6 +55,7 @@ public interface ICustomerMapper {
         WalletDto walletDto = new WalletDto();
         walletDto.setWalletId(wallet.getWalletId());
         walletDto.setBalance(wallet.getBalance());
+        walletDto.setCustomerId(wallet.getCustomerId());
         return walletDto;
     }
 

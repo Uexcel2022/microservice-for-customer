@@ -9,7 +9,7 @@ import lombok.Setter;
 public class Customer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String customerId;
     private String firstName;
     private String lastName;
     @Column(unique = true)

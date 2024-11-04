@@ -59,7 +59,7 @@ public class CustomerServiceImpl implements ICustomerService {
         Customer customer =
                 customerRepository.save(iCustomerMapper
                         .mapToNewCustomer(customerDto));
-        Wallet  wallet = iCustomerMapper.createWallet(customer.getId());
+        Wallet  wallet = iCustomerMapper.createWallet(customer.getCustomerId());
         welledRepository.save(wallet);
     }
 
@@ -70,7 +70,7 @@ public class CustomerServiceImpl implements ICustomerService {
     @Override
     public CustomerDto getCustomer(String emailOrPhone) {
         Customer customer = customerExists(emailOrPhone);
-        Wallet wallet = walletExists(customer.getId());
+        Wallet wallet = walletExists(customer.getCustomerId());
       return   iCustomerMapper.mapToCustomerDto(customer,wallet);
     }
 
@@ -93,7 +93,7 @@ public class CustomerServiceImpl implements ICustomerService {
     public boolean deleteCustomer(String emailOrPhone) {
         Customer customer = customerExists(emailOrPhone);
         customer.setStatus(ICustomerConstants.CUSTOMER_DEACTIVATED);
-        Wallet wallet = walletExists(customer.getId());
+        Wallet wallet = walletExists(customer.getCustomerId());
         wallet.setStatus(ICustomerConstants.CUSTOMER_DEACTIVATED);
         customerRepository.save(customer);
         welledRepository.save(wallet);

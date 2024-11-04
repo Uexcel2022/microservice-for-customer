@@ -17,16 +17,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException
             (final  ResourceNotFoundException e, final WebRequest webRequest) {
       ErrorResponseDto err =  new ErrorResponseDto(
-              404,e.getMessage(),
-                webRequest.getDescription(false), getTimeStamp());
+              getTimeStamp(), 404,e.getMessage(),
+                webRequest.getDescription(false));
       return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponseDto> handleValidationException(
             final BadRequestException e, final WebRequest webRequest){
         ErrorResponseDto err =  new ErrorResponseDto(
-                400,e.getMessage(),
-                webRequest.getDescription(false), getTimeStamp());
+                getTimeStamp(), 400,e.getMessage(),
+                webRequest.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
     }
 
@@ -36,8 +36,7 @@ public class GlobalExceptionHandler {
         String msg = e.getUsed().size()>1? "Fields value has been used by customer.":
                 "Field value has been been use by a customer";
         CustomerErrorResponseDto err =
-                new CustomerErrorResponseDto(
-                        getTimeStamp(), 226,
+                new CustomerErrorResponseDto(getTimeStamp(), 226,
                         HttpStatus.IM_USED,msg,
                         e.getUsed() , webRequest.getDescription(false)
                 );
@@ -49,16 +48,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleExceptionFail(
             final ExceptionFail e, final WebRequest webRequest){
         ErrorResponseDto err =  new ErrorResponseDto(
-                417,e.getMessage(),
-                webRequest.getDescription(false), getTimeStamp());
+                getTimeStamp(), 417,e.getMessage(),
+                webRequest.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.EXPECTATION_FAILED);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleException(final Exception e, final WebRequest webRequest) {
         ErrorResponseDto err =  new ErrorResponseDto(
-                500,e.getMessage(),
-                webRequest.getDescription(false), getTimeStamp());
+                getTimeStamp(), 500,e.getMessage(),
+                webRequest.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
